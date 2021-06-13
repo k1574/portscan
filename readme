@@ -1,0 +1,4 @@
+# portscan
+
+Scan ports of specified host read from standard input.
+
