@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
@@ -37,7 +38,8 @@ scan_port(unsigned short port, char *host)
 		fprintf(stderr, "%s: could not create socket\n", argv0);
 		return;
 	}
-	setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+	setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+	
 
 	saddr.sin_port = htons(port) ;
 	if(connect(sock, (struct sockaddr *)&saddr, sizeof(saddr)) < 0){
@@ -50,8 +52,7 @@ scan_port(unsigned short port, char *host)
 int
 main(int argc, char *argv[])
 {
-
-	int port;
+	int port, status;
 	char buf[32];
 
 	argv0 = argv[0] ;
@@ -66,6 +67,9 @@ main(int argc, char *argv[])
 			goto finish_thread;
 		}
 	}
+
+	while(wait(&status) > 0)
+		;
 
 finish_thread:
 	return 0 ;
