@@ -1,0 +1,4 @@
+#!/usr/bin/env rc
+
+seq 10000 | portscan `{hn2ip $*}
+
